@@ -48,7 +48,6 @@ const formSchema = z.object({
     required_error: "Please select a gender",
   }),
   dateOfBirth: z.date({ required_error: "A date of birth is required" }),
-
   // .string()
   // .regex(/^\d{4}-\d{2}-\d{2}$/, { message: "Please select a valid date" })
   // .min(1, { message: "Date of birth is required " }),
@@ -58,6 +57,7 @@ const formSchema = z.object({
     .object({
       password: z
         .string()
+        .min(0, { message: "password must be at least 6 characters" })
         .min(6, { message: "password must be at least 6 characters" }),
       confirm: z.string(),
     })
@@ -95,6 +95,9 @@ const Register = ({ children }: FormWrapperProps) => {
 
   const onSubmit = (data: FormData) => {
     console.log("Form submitted:", data);
+    form.reset();
+    setShowPassword(false);
+    setShowConfirmPassword(false);
   };
   return (
     <>
@@ -110,6 +113,7 @@ const Register = ({ children }: FormWrapperProps) => {
                 <FormControl>
                   <Input placeholder="Enter your first name" {...field} />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -122,6 +126,20 @@ const Register = ({ children }: FormWrapperProps) => {
                 <FormControl>
                   <Input placeholder="Enter your last name" {...field} />
                 </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="username"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Username</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter your user name" {...field} />
+                </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -134,12 +152,14 @@ const Register = ({ children }: FormWrapperProps) => {
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
+                  value={field.value ?? undefined}
                 >
                   <FormControl>
                     <SelectTrigger className="min-w-full">
                       <SelectValue placeholder="Select a gender" />
                     </SelectTrigger>
                   </FormControl>
+                  <FormMessage />
                   <SelectContent>
                     <SelectItem value="male">Male</SelectItem>
                     <SelectItem value="female">Female</SelectItem>
@@ -173,6 +193,7 @@ const Register = ({ children }: FormWrapperProps) => {
                       </Button>
                     </FormControl>
                   </PopoverTrigger>
+                  <FormMessage />
                   <PopoverContent className="w-full p-0" align="center">
                     <Calendar
                       mode="single"
@@ -201,6 +222,7 @@ const Register = ({ children }: FormWrapperProps) => {
                     type="email"
                   />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -216,6 +238,11 @@ const Register = ({ children }: FormWrapperProps) => {
                       placeholder="Enter your password"
                       type={showPassword ? "text" : "password"}
                       {...field}
+                      className={
+                        form.formState.errors.password?.password
+                          ? "border border-red-500"
+                          : ""
+                      }
                     />
                     <Button
                       type="button"
@@ -228,6 +255,7 @@ const Register = ({ children }: FormWrapperProps) => {
                     </Button>
                   </div>
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -243,6 +271,11 @@ const Register = ({ children }: FormWrapperProps) => {
                       placeholder="Confirm your password"
                       type={showConfirmPassword ? "text" : "password"}
                       {...field}
+                      className={
+                        form.formState.errors.password?.confirm
+                          ? "border border-red-500"
+                          : ""
+                      }
                     />
                     <Button
                       type="button"
@@ -261,10 +294,18 @@ const Register = ({ children }: FormWrapperProps) => {
                     </Button>
                   </div>
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           ></FormField>
           {children}
+          <Button
+            type="submit"
+            className="cursor-pointer mb-3.5"
+            disabled={!form.handleSubmit}
+          >
+            Sign up
+          </Button>
         </form>
       </Form>
     </>
