@@ -1,20 +1,19 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import z, { date } from "zod";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import z from "zod";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 
 import {
   Select,
@@ -24,16 +23,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { ReactNode } from "react";
+import { Calendar } from "@/components/ui/calendar";
+import { cn } from "@/lib/utils";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@radix-ui/react-popover";
-import { cn } from "@/lib/utils";
 import { format } from "date-fns";
-import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon, Eye, EyeOff } from "lucide-react";
+import { ReactNode } from "react";
+import Link from "next/link";
 
 const formSchema = z.object({
   firstname: z
@@ -100,8 +100,8 @@ const Register = ({ children }: FormWrapperProps) => {
     setShowConfirmPassword(false);
   };
   return (
-    <>
-      <div className="pt-4">Register here</div>
+    <div className="lg:mx-auto lg:max-w-[560px] lg:min-h-[680px] min-h-[450px] border border-gray-950 lg:mt-2 lg:mb-7 mt-2 mb-5 rounded-xl mx-4 px-4">
+      <div>Register here</div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
@@ -299,16 +299,19 @@ const Register = ({ children }: FormWrapperProps) => {
             )}
           ></FormField>
           {children}
-          <Button
-            type="submit"
-            className="cursor-pointer mb-3.5"
-            disabled={!form.handleSubmit}
-          >
-            Sign up
-          </Button>
+          <div className="flex items-center justify-between">
+            <Button
+              type="submit"
+              className="cursor-pointer mb-3.5"
+              disabled={!form.handleSubmit}
+            >
+              Sign up
+            </Button>
+            <Link href="/login">Already have an account? Log in</Link>
+          </div>
         </form>
       </Form>
-    </>
+    </div>
   );
 };
 
